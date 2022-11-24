@@ -1,0 +1,5 @@
+__pycache__/
+/app/outpu_graphs/.
+/venv
+/.idea
+database/
