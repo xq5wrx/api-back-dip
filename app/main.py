@@ -32,17 +32,25 @@ async def getResult():
     return HTMLResponse(content=content)
 
 
-@app.get("/resultImage")
+@app.get("/result-image")
 async def getImage():
     return FileResponse("output_graphs/new_graph.png")
 
 
-@app.get("/model")
+@app.get("/make-model")
 async def makeModel():
     result = model.generateModel()
     if result:
         return {"status": "ok", "message": "Model successfully created!"}
     return {"status": "error", "message": "Model not created."}
+
+
+@app.get("/load-model")
+async def loadModel():
+    result = model.loadSavedModel()
+    if result:
+        return {"status": "ok", "message": "Model successfully loaded!"}
+    return {"status": "error", "message": "Model not loaded."}
 
 
 @app.post("/import")

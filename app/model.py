@@ -23,6 +23,25 @@ def generateModel():
     # Построение модели
     test_mse_score, test_mae_score, predicted = func.makeFinalModel(test_input, test_output, epochs)
 
+    # загрузка модели
+    test_mse_score, test_mae_score, predicted = func.loadFinalModel(test_input, test_output)
+
+    # Получение результат
+    func.getFinalResult(test_mae_score, test_mse_score, predicted, test_output, denorm)
+
+    return 1
+
+
+def loadSavedModel():
+    # Получение и преобразование данных
+    train_input, train_output = func.getTrainData()
+
+    # Получение и преобразование данных
+    test_input, test_output, denorm = func.getMainData(train_input, train_output)
+
+    # загрузка модели
+    test_mse_score, test_mae_score, predicted = func.loadFinalModel(test_input, test_output)
+
     # Получение результат
     func.getFinalResult(test_mae_score, test_mse_score, predicted, test_output, denorm)
 
@@ -30,6 +49,7 @@ def generateModel():
 
 
 def importDataSql(file: UploadFile):
+
     # for save and open file
     # with open("input_files/" + file.filename, 'wb') as image:
     #     content = await file.read()
@@ -38,6 +58,7 @@ def importDataSql(file: UploadFile):
     #
     # with open("input_files/test.sql", "r") as f:
     #     sql = f.read()
+
     contents = file.file.read()
     sql = str(contents, 'utf-8')
 

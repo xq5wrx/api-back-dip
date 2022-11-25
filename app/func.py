@@ -12,6 +12,7 @@ from keras.layers import Dense, Activation
 from pca import pca
 import matplotlib.pyplot as plt
 import plotly.graph_objects as go
+from keras import models
 from plotly.subplots import make_subplots
 
 """ Метод главных компонент """
@@ -330,7 +331,7 @@ def transpoteAllInputData():
             sss_disp[i] = getStatisticDisp(sss_s)
 
             i = i + 1
-        # TODO доделать формирование запроса на исерт
+
         sql_tmp = "VALUES (NULL, '" + str(year) + ""
 
         for i in range(12):
@@ -380,10 +381,12 @@ def build_model():
     model.add(Dense(units=390, activation='relu'))
     model.add(Dense(units=52, activation='relu'))
     model.add(Dense(units=13, activation='sigmoid'))
+
     # activation : elu, sigmoid, relu, softmax
     # loss       : mse, binary_crossentropy(0.4), poisson(0.7), logcosh(0.01), hinge
     # optimizer  : sgd(стох град спуск), rmsprop(sgd с импульсом), adam (изменение скорости)
     # metrics    : accuracy
+
     model.compile(loss='mse', optimizer='rmsprop', metrics=['accuracy'])
     return model
 
@@ -505,6 +508,16 @@ def makeFinalModel(test_input, test_output, epochs):
     )
     test_mse_score, test_mae_score = model.evaluate(test_input, test_output)
     predicted = model.predict(test_input)
+    model.save('model/last_model')
+
+    return test_mse_score, test_mae_score, predicted
+
+
+def loadFinalModel(test_input, test_output):
+    # загрузка итоговой модели
+    model = models.load_model('model/last_model')
+    test_mse_score, test_mae_score = model.evaluate(test_input, test_output)
+    predicted = model.predict(test_input)
 
     return test_mse_score, test_mae_score, predicted
 
@@ -558,6 +571,6 @@ def getFinalResult(test_mae_score, test_mse_score, predicted, test_output, denor
     fig['layout'].update(title='Сравнение данных, спрогнозированных моделью за 2012 год.', xaxis=dict(
         tickangle=-90))
 
-    #   fig.show()
-    # fig.write_image("output_graphs/new_graph.png")
+    # fig.show()
+    fig.write_image("output_graphs/new_graph.png")
 
